@@ -1,0 +1,25 @@
+{
+  "name": "quake_log_parser_nodejs",
+  "version": "1.0.0",
+  "description": "Luiza Labs test",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/jeanmfdias/quake_log_parser_nodejs.git"
+  },
+  "keywords": [
+    "node",
+    "log",
+    "js",
+    "test"
+  ],
+  "author": "Jean Dias",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/jeanmfdias/quake_log_parser_nodejs#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
