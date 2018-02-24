@@ -4,7 +4,8 @@
   "description": "Luiza Labs test",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,10 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/jeanmfdias/quake_log_parser_nodejs#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.15.1"
   }
 }
