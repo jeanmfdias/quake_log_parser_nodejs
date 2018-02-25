@@ -1,7 +1,7 @@
 // app/modules/ParserGameLog.js
 
-var fs = require('fs')
-var readline = require('readline')
+const fs = require('fs')
+const readline = require('readline')
 
 function ParserGameLog(name_file) {
   this._file = name_file
@@ -9,12 +9,21 @@ function ParserGameLog(name_file) {
 }
 
 ParserGameLog.prototype.loadLog = function() {
-  var lineReader = readline.createInterface({
-    input: fs.createReadStream(this._local+this._file)
+  var lineReader = fs.readFileSync(this._local+this._file, 'utf8').split('\n').filter(Boolean)
+  return lineReader
+}
+
+ParserGameLog.prototype.totalGames = function() {
+  var lineReader = this.loadLog()
+  var games = 0
+  var regex = new RegExp("ShutdownGame")
+
+  lineReader.forEach(function(element, index, array) {
+    if (regex.test(element)) {
+      games = games + 1
+    }
   })
-  lineReader.on('line', function(line) {
-    console.log('Line: ', line)
-  })
+  return games
 }
 
 module.exports = ParserGameLog

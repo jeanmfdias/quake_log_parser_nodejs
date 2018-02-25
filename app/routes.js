@@ -5,13 +5,13 @@ const parserGameLog = require('./modules/ParserGameLog')
 module.exports = function(app) {
 
   app.get('/', function(req, res) {
-    res.send("Quake Log Parser")
+    res.send({"app": "Quake Log Parser"})
   })
 
-  app.get('/games/log', function(req, res) {
+  app.get('/games', function(req, res) {
     var pgl = new parserGameLog('games.log')
-    pgl.loadLog()
-    res.send('Read log on console')
+    var count = pgl.totalGames()
+    res.send({"total_games": count})
   })
 
 }

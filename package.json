@@ -21,7 +21,6 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/jeanmfdias/quake_log_parser_nodejs#readme",
   "dependencies": {
-    "body-parser": "^1.18.2",
     "express": "^4.16.2"
   },
   "devDependencies": {
