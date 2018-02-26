@@ -1,6 +1,6 @@
 // app/routes.js
 
-const parserGameLog = require('./modules/ParserGameLog')
+const ParserGameLog = require('./modules/ParserGameLog')
 
 module.exports = function(app) {
 
@@ -8,10 +8,21 @@ module.exports = function(app) {
     res.send({"app": "Quake Log Parser"})
   })
 
-  app.get('/games', function(req, res) {
-    var pgl = new parserGameLog('games.log')
+  app.get('/games/total', function(req, res) {
+    var pgl = new ParserGameLog('games.log')
     var count = pgl.totalGames()
     res.send({"total_games": count})
+  })
+
+  app.get('/games/:num', function(req, res) {
+    var pgl = new ParserGameLog('games.log')
+    var numGame = req.params.num
+    var detailGame = pgl.getGame(req.params.num)
+
+    res.send({
+      "game": numGame,
+      "total_kills": detailGame.totalKill
+    })
   })
 
 }
