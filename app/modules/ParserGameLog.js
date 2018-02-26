@@ -12,7 +12,8 @@ function ParserGameLog(name_file) {
  * Method to return log file in array
  */
 ParserGameLog.prototype.loadLog = function() {
-  var lineReader = fs.readFileSync(this._local+this._file, 'utf8').split('\n').filter(Boolean)
+  var lineReader = fs.readFileSync(this._local+this._file, 'utf8')
+    .split('\n').filter(Boolean)
   return lineReader
 }
 
@@ -44,11 +45,23 @@ ParserGameLog.prototype.getGame = function(numGame) {
       totalKill += 1;
     }
   }
-  return {totalKill: totalKill}
+  return {
+    'game': numGame,
+    'total_kills': totalKill
+  }
+}
+
+ParserGameLog.prototype.getGames = function() {
+  var total = this.totalGames()
+  var games = {}
+  for (i = 1; i <= total; i++) {
+    games[i] = this.getGame(i)
+  }
+  return games
 }
 
 /**
- * Return the index of lines of a game
+ * Return the rows index of a game
  * param numGame
  */
 ParserGameLog.prototype.getGameIndex = function(numGame) {
@@ -59,18 +72,20 @@ ParserGameLog.prototype.getGameIndex = function(numGame) {
   var gameDown = false
 
   lineReader.forEach(function(line, index) {
+    // Check if Initial Game
     if (/InitGame:/.test(line)) {
+      // Check if the game has not crached
       if (indexInitGame == -1) {
         indexInitGame = index
       } else {
+        // if crached, mark new initGame as shutdownGame of previous game
         indexShutdownGame = index
         gameDown = true
       }
-      console.log('init ',index, ' init ', indexInitGame, ' shut ', indexShutdownGame)
     }
+    // Check if End Game
     if (/ShutdownGame:/.test(line)) {
       indexShutdownGame = index
-      console.log('shut ', index, ' init ', indexInitGame, ' shut ', indexShutdownGame)
     }
     if (indexInitGame != -1 && indexShutdownGame != -1) {
       countGame += 1

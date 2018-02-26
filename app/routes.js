@@ -10,19 +10,17 @@ module.exports = function(app) {
 
   app.get('/games/total', function(req, res) {
     var pgl = new ParserGameLog('games.log')
-    var count = pgl.totalGames()
-    res.send({"total_games": count})
+    res.send({"total_games": pgl.totalGames()})
+  })
+
+  app.get('/games', function (req, res) {
+    var pgl = new ParserGameLog('games.log')
+    res.send(pgl.getGames())
   })
 
   app.get('/games/:num', function(req, res) {
     var pgl = new ParserGameLog('games.log')
-    var numGame = req.params.num
-    var detailGame = pgl.getGame(req.params.num)
-
-    res.send({
-      "game": numGame,
-      "total_kills": detailGame.totalKill
-    })
+    res.send(pgl.getGame(req.params.num))
   })
 
 }
