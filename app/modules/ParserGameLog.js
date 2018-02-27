@@ -1,61 +1,63 @@
 // app/modules/ParserGameLog.js
 
 const fs = require('fs')
-const readline = require('readline')
 
-function ParserGameLog(name_file) {
-  this._file = name_file
-  this._local = './storage/logs/'
-}
-
-/**
- * Method to return log file in array
- */
-ParserGameLog.prototype.loadLog = function() {
-  var lineReader = fs.readFileSync(this._local+this._file, 'utf8')
+function ParserGameLog(nameFile) {
+  this._fileLine = fs.readFileSync('./storage/logs/'+nameFile, 'utf8')
     .split('\n').filter(Boolean)
-  return lineReader
 }
 
 /**
  * Method to return totalGames
  */
-ParserGameLog.prototype.totalGames = function() {
-  var lineReader = this.loadLog()
+ParserGameLog.prototype.totalGames = function(callback) {
   var games = 0
-
-  lineReader.forEach(function(element, index, array) {
+  this._fileLine.forEach(function(element, index, array) {
     if (/InitGame/.test(element)) {
       games += 1
     }
   })
-  return games
+  callback(games)
 }
 
 /**
  * Method to return a valid game
  */
-ParserGameLog.prototype.getGame = function(numGame) {
-  var lineReader = this.loadLog()
-  var index = this.getGameIndex(numGame)
-  var totalKill = 0
+ParserGameLog.prototype.getGame = function(numGame, callback) {
+  var totalKills = 0
+  var index = {}
 
-  for (i = index.initGame; i < index.shutdownGame; i++) {
-    if (/Kill:/.test(lineReader[i])) {
-      totalKill += 1;
-    }
-  }
-  return {
-    'game': numGame,
-    'total_kills': totalKill
-  }
+  this.getGameIndex(numGame, function returnGame(indexGames) {
+    index = indexGames
+  })
+
+  this.getKills(index, function(totalKills) {
+    callback({numGame: numGame, totalKill: totalKills})
+  })
+
 }
 
+ParserGameLog.prototype.getKills = function(index, callback) {
+  var totalKills = 0
+
+  for (i = index.initGame; i < index.shutdownGame; i++) {
+    if (/Kill:/.test(this._fileLine[i])) {
+      totalKills += 1;
+    }
+  }
+  callback(totalKills)
+}
+
+/**
+ *
+ */
 ParserGameLog.prototype.getGames = function() {
   var total = this.totalGames()
   var games = {}
   for (i = 1; i <= total; i++) {
-    games[i] = this.getGame(i)
+    games[i] = this.getGame(i, function(data) {
+      return data
+    })
   }
   return games
 }
@@ -64,14 +66,13 @@ ParserGameLog.prototype.getGames = function() {
  * Return the rows index of a game
  * param numGame
  */
-ParserGameLog.prototype.getGameIndex = function(numGame) {
-  var lineReader = this.loadLog()
+ParserGameLog.prototype.getGameIndex = function(numGame, callback) {
   var indexInitGame, indexShutdownGame = -1
   var countGame = -1
   var returnIndexInitGame, returnIndexShutdownGame = -1
   var gameDown = false
 
-  lineReader.forEach(function(line, index) {
+  this._fileLine.forEach(function(line, index) {
     // Check if Initial Game
     if (/InitGame:/.test(line)) {
       // Check if the game has not crached
@@ -104,7 +105,7 @@ ParserGameLog.prototype.getGameIndex = function(numGame) {
       }
     }
   })
-  return {initGame: returnIndexInitGame, shutdownGame: returnIndexShutdownGame}
+  return callback({initGame: returnIndexInitGame, shutdownGame: returnIndexShutdownGame})
 }
 
 module.exports = ParserGameLog
