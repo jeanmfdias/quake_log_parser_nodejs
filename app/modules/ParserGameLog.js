@@ -26,40 +26,38 @@ ParserGameLog.prototype.totalGames = function(callback) {
 ParserGameLog.prototype.getGame = function(numGame, callback) {
   var totalKills = 0
   var index = {}
+  var players = []
+  var playerKills = {}
 
   this.getGameIndex(numGame, function returnGame(indexGames) {
     index = indexGames
   })
 
-  this.getKills(index, function(totalKills) {
-    callback({numGame: numGame, totalKill: totalKills})
-  })
-
-}
-
-ParserGameLog.prototype.getKills = function(index, callback) {
-  var totalKills = 0
-
   for (i = index.initGame; i < index.shutdownGame; i++) {
     if (/Kill:/.test(this._fileLine[i])) {
       totalKills += 1;
+
+      string = this._fileLine[i].match("(?=[0-9]: ).*(?= killed)")
+      string = string[0].substr(3)
+      if (string !== '<world>') {
+        if (!players.includes(string)) {
+          players.push(string)
+        }
+      }
+      if (playerKills[string] != undefined) {
+        playerKills[string] += 1
+      } else {
+        playerKills[string] = 1
+      }
     }
   }
-  callback(totalKills)
-}
 
-/**
- *
- */
-ParserGameLog.prototype.getGames = function() {
-  var total = this.totalGames()
-  var games = {}
-  for (i = 1; i <= total; i++) {
-    games[i] = this.getGame(i, function(data) {
-      return data
-    })
-  }
-  return games
+  callback({
+    numGame: numGame,
+    totalKill: totalKills,
+    players: players,
+    playerKills: playerKills
+  })
 }
 
 /**
