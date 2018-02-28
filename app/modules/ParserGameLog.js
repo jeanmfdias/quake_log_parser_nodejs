@@ -37,17 +37,34 @@ ParserGameLog.prototype.getGame = function(numGame, callback) {
     if (/Kill:/.test(this._fileLine[i])) {
       totalKills += 1;
 
+      // Get players killers
       string = this._fileLine[i].match("(?=[0-9]: ).*(?= killed)")
       string = string[0].substr(3)
-      if (string !== '<world>') {
+      if (string != '<world>') {
         if (!players.includes(string)) {
           players.push(string)
+          playerKills[string] = 0
         }
       }
-      if (playerKills[string] != undefined) {
-        playerKills[string] += 1
-      } else {
-        playerKills[string] = 1
+      // Get players dead
+      dead = this._fileLine[i].match("(?=killed).*(?= by)")
+      dead = dead[0].match("(?= ).*")
+      dead = dead[0].substr(1)
+      if (!players.includes(dead)) {
+        players.push(dead)
+        playerKills[dead] = 0
+      }
+      // If players kill himself doesn't add
+      if (string != dead) {
+        if (string != '<world>') {
+          playerKills[string] += 1
+        } else {
+          if (playerKills[dead] < 1) {
+            playerKills[dead] = 0
+          } else {
+            playerKills[dead] -= 1
+          }
+        }
       }
     }
   }

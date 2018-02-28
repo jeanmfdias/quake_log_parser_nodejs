@@ -8,6 +8,15 @@ module.exports = function(app) {
     res.send({"app": "Quake Log Parser"})
   })
 
+  app.get('/games/total', function(req, res) {
+    var pgl = new ParserGameLog('games.log')
+    pgl.totalGames(function(data) {
+      res.send({
+        'total_games': data
+      })
+    })
+  })
+
   app.get('/games/:num', function(req, res) {
     var pgl = new ParserGameLog('games.log')
     pgl.getGame(req.params.num, function(data) {
@@ -19,5 +28,6 @@ module.exports = function(app) {
       })
     })
   })
+
 
 }
