@@ -3,8 +3,14 @@
 const fs = require('fs')
 
 function ParserGameLog(nameFile) {
-  this._fileLine = fs.readFileSync('./storage/logs/'+nameFile, 'utf8')
-    .split('\n').filter(Boolean)
+  if (nameFile != undefined) {
+    this._fileLine = fs.readFileSync('./storage/logs/'+nameFile, 'utf8')
+      .split('\n').filter(Boolean)
+  }
+}
+
+ParserGameLog.prototype.getFileLine = function() {
+  return this._fileLine
 }
 
 /**
