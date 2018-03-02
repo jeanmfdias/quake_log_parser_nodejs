@@ -14,6 +14,9 @@ function ParserGameLog(nameFile) {
   }
 }
 
+/**
+ * Method to return _fileLine
+ */
 ParserGameLog.prototype.getFileLine = function() {
   return this._fileLine;
 }
