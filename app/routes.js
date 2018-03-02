@@ -20,7 +20,7 @@ module.exports = function(app) {
     pgl.getGame(req.params.num, function(data) {
       res.send({
         'game': data.numGame,
-        'total_kills': data.totalKill,
+        'total_kills': data.totalKills,
         'players': data.players,
         'kills': data.playerKills
       });

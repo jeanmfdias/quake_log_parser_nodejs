@@ -45,35 +45,37 @@ ParserGameLog.prototype.getGame = function(numGame, callback) {
     index = indexGames;
   });
 
-  for (i = index.initGame; i < index.shutdownGame; i++) {
-    if (/Kill:/.test(this._fileLine[i])) {
-      totalKills += 1;
+  if (index.initGame != -1 && index.shutdownGame != -1) {
+    for (i = index.initGame; i < index.shutdownGame; i++) {
+      if (/Kill:/.test(this._fileLine[i])) {
+        totalKills += 1;
 
-      // Get players killers
-      string = this._fileLine[i].match("(?=[0-9]: ).*(?= killed)");
-      string = string[0].substr(3);
-      if (string != '<world>') {
-        if (!players.includes(string)) {
-          players.push(string);
-          playerKills[string] = 0;
+        // Get players killers
+        string = this._fileLine[i].match("(?=[0-9]: ).*(?= killed)");
+        string = string[0].substr(3);
+        if (string != '<world>') {
+          if (!players.includes(string)) {
+            players.push(string);
+            playerKills[string] = 0;
+          }
         }
-      }
-      // Get players dead
-      dead = this._fileLine[i].match("(?=killed).*(?= by)");
-      dead = dead[0].match("(?= ).*");
-      dead = dead[0].substr(1);
-      if (!players.includes(dead)) {
-        players.push(dead);
-        playerKills[dead] = 0;
-      }
-
-      if (string != '<world>') {
-        playerKills[string] += 1;
-      } else {
-        if (playerKills[dead] < 1) {
+        // Get players dead
+        dead = this._fileLine[i].match("(?=killed).*(?= by)");
+        dead = dead[0].match("(?= ).*");
+        dead = dead[0].substr(1);
+        if (!players.includes(dead)) {
+          players.push(dead);
           playerKills[dead] = 0;
+        }
+
+        if (string != '<world>') {
+          playerKills[string] += 1;
         } else {
-          playerKills[dead] -= 1;
+          if (playerKills[dead] < 1) {
+            playerKills[dead] = 0;
+          } else {
+            playerKills[dead] -= 1;
+          }
         }
       }
     }
@@ -81,7 +83,7 @@ ParserGameLog.prototype.getGame = function(numGame, callback) {
 
   callback({
     numGame: numGame,
-    totalKill: totalKills,
+    totalKills: totalKills,
     players: players,
     playerKills: playerKills
   });
