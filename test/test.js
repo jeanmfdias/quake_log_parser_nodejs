@@ -36,4 +36,40 @@ describe('ParserGameLog', function() {
     });
   });
 
+  describe('getGameIndex', function() {
+    it('the index in the game file is -1 because it not load the correct file', function() {
+      var pgl = new ParserGameLog('gamesNotExists.log'),
+        index = undefined;
+
+      pgl.getGameIndex(1, function(data) {
+        index = data;
+      });
+      assert.equal(index.initGame, -1);
+      assert.equal(index.shutdownGame, -1);
+    });
+
+    it(`the index in the game file is -1 with loading the correct file,
+        but specified an game what don\'t exists`, function() {
+      var pgl = new ParserGameLog('games.log'),
+        index = undefined;
+
+      pgl.getGameIndex(100, function(data) {
+        index = data;
+      });
+      assert.equal(index.initGame, -1);
+      assert.equal(index.shutdownGame, -1);
+    });
+
+    it('the index in the game file not is -1', function() {
+      var pgl = new ParserGameLog('games.log'),
+        index = undefined;
+
+      pgl.getGameIndex(1, function(data) {
+        index = data;
+      });
+      assert.notEqual(index.initGame, -1);
+      assert.notEqual(index.shutdownGame, -1);
+    });
+  });
+
 });
