@@ -27,5 +27,11 @@ module.exports = function(app) {
     });
   });
 
+  app.get('/games/:num/detail', function(req, res) {
+    var pgl = new ParserGameLog('games.log');
+    pgl.getGameInfo(req.params.num, function(data) {
+      res.send({"infos_game": data});
+    });
+  });
 
 }

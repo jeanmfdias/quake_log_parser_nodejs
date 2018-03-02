@@ -1,6 +1,7 @@
 // app/modules/ParserGameLog.js
 
 const fs = require('fs');
+const facts = require('./Facts');
 
 function ParserGameLog(nameFile) {
   if (nameFile != undefined) {
@@ -39,7 +40,9 @@ ParserGameLog.prototype.getGame = function(numGame, callback) {
   var totalKills = 0,
     index = {},
     players = [],
-    playerKills = {};
+    playerKills = {},
+    string = "",
+    dead = "";
 
   this.getGameIndex(numGame, function returnGame(indexGames) {
     index = indexGames;
@@ -90,8 +93,56 @@ ParserGameLog.prototype.getGame = function(numGame, callback) {
 }
 
 /**
+ * Return a review of a game
+ * param numGame expects an integer
+ * param callback expects a function
+ */
+ParserGameLog.prototype.getGameInfo = function(numGame, callback) {
+  var data = {},
+    string = [],
+    index = {},
+    killer = "",
+    dead = "",
+    fact = "",
+    j = 0;
+
+    this.getGameIndex(numGame, function (indexGames) {
+      index = indexGames;
+    });
+
+    if (index.initGame != -1 && index.shutdownGame != -1) {
+      for (i = index.initGame; i < index.shutdownGame; i++) {
+        if (/Kill:/.test(this._fileLine[i])) {
+
+          // Get players killers
+          killer = this._fileLine[i].match("(?=[0-9]: ).*(?= killed)");
+          killer = killer[0].substr(3);
+
+          // Get players dead
+          dead = this._fileLine[i].match("(?=killed).*(?= by)");
+          dead = dead[0].match("(?= ).*");
+          dead = dead[0].substr(1);
+
+          fact = this._fileLine[i].match("(?=by ).*");
+          fact = fact[0].substr(3);
+
+          if (killer != '<world>' && killer != dead) {
+            string[j++] = `O player \"` +killer+ `\" matou o player `+ dead + ` ` + facts(fact);
+          } else {
+            string[j++] = `O player \"` + dead + `\" morreu ` + facts(fact);
+          }
+          console.log(string);
+        }
+      }
+    }
+
+    callback(string);
+}
+
+/**
  * Return the rows index of a game
- * param numGame
+ * param numGame expects an integer
+ * param callback expects a function
  */
 ParserGameLog.prototype.getGameIndex = function(numGame, callback) {
   var indexInitGame = -1,
