@@ -66,16 +66,14 @@ ParserGameLog.prototype.getGame = function(numGame, callback) {
         players.push(dead);
         playerKills[dead] = 0;
       }
-      // If players kill himself doesn't add
-      if (string != dead) {
-        if (string != '<world>') {
-          playerKills[string] += 1;
+
+      if (string != '<world>') {
+        playerKills[string] += 1;
+      } else {
+        if (playerKills[dead] < 1) {
+          playerKills[dead] = 0;
         } else {
-          if (playerKills[dead] < 1) {
-            playerKills[dead] = 0;
-          } else {
-            playerKills[dead] -= 1;
-          }
+          playerKills[dead] -= 1;
         }
       }
     }
