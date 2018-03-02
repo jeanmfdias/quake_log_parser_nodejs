@@ -174,7 +174,7 @@ describe('ParserGameLog', function() {
       assert.isAtLeast(game.totalKill, 0);
     });
 
-    it('return players in empty array because it not load the correct file', function() {
+    it('return players as empty array because it not load the correct file', function() {
       var pgl = new ParserGameLog('gamesNotExists.log'),
         game = {};
 
@@ -184,7 +184,7 @@ describe('ParserGameLog', function() {
       assert.isEmpty(game.players);
     });
 
-    it('return players in empty array if it games don\'t exists, but loading the correct file', function() {
+    it('return players as empty array if it games don\'t exists, but loading the correct file', function() {
       var pgl = new ParserGameLog('games.log'),
         game = {};
 
@@ -194,7 +194,7 @@ describe('ParserGameLog', function() {
       assert.isEmpty(game.players);
     });
 
-    it('return players in array with loading the correct file', function() {
+    it('return players as array with loading the correct file', function() {
       var pgl = new ParserGameLog('games.log'),
         game = {};
 
@@ -204,7 +204,7 @@ describe('ParserGameLog', function() {
       assert.isArray(game.players);
     });
 
-    it('return playerKills in empty object because it not load the correct file', function() {
+    it('return playerKills as empty object because it not load the correct file', function() {
       var pgl = new ParserGameLog('gamesNotExists.log'),
         game = {};
 
@@ -214,7 +214,7 @@ describe('ParserGameLog', function() {
       assert.isEmpty(game.playerKills);
     });
 
-    it('return playerKills in empty object if it game don\'t exists , but loading the correct file', function() {
+    it('return playerKills as empty object if it game don\'t exists , but loading the correct file', function() {
       var pgl = new ParserGameLog('games.log'),
         game = {};
 
@@ -224,7 +224,7 @@ describe('ParserGameLog', function() {
       assert.isEmpty(game.playerKills);
     });
 
-    it('return playerKills in object with loading the correct file', function() {
+    it('return playerKills as object with loading the correct file', function() {
       var pgl = new ParserGameLog('games.log'),
         game = {};
 
@@ -232,6 +232,41 @@ describe('ParserGameLog', function() {
         game.playerKills = data.playerKills;
       });
       assert.isObject(game.playerKills);
+    });
+  });
+
+  /**
+   * Test for getGameInfo
+   */
+  describe('getGameInfo', function() {
+    it('return infos game as empty array because not load the correct file', function() {
+      var pgl = new ParserGameLog('gamesNotExists.log'),
+        info = [];
+
+      pgl.getGameInfo(1, function(data) {
+        info = data;
+      });
+      assert.isEmpty(info);
+    });
+
+    it('return infos game as empty array because game don\'t exists, but loading the correct file', function() {
+      var pgl = new ParserGameLog('games.log'),
+        info = [];
+
+      pgl.getGameInfo(100, function(data) {
+        info = data;
+      });
+      assert.isEmpty(info);
+    });
+
+    it('return infos game as array with loading the correct file', function() {
+      var pgl = new ParserGameLog('games.log'),
+      info = [];
+
+      pgl.getGameInfo(1, function(data) {
+        info = data;
+      });
+      assert.isArray(info);
     });
   });
 

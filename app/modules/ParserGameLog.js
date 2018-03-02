@@ -131,11 +131,9 @@ ParserGameLog.prototype.getGameInfo = function(numGame, callback) {
           } else {
             string[j++] = `O player \"` + dead + `\" morreu ` + facts(fact);
           }
-          console.log(string);
         }
       }
     }
-
     callback(string);
 }
 
