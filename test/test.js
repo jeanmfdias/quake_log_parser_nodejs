@@ -22,4 +22,18 @@ describe('ParserGameLog', function() {
     });
   });
 
+  describe('getTotalGames', function() {
+    it('total games is zero because it not load the correct file', function() {
+      var pgl = new ParserGameLog('gamesNotExists.log');
+
+      assert.equal(pgl.getTotalGames(), 0);
+    });
+
+    it('total games is more than or equal zero because it load the correct file', function() {
+      var pgl = new ParserGameLog('games.log');
+
+      assert.isAtLeast(pgl.getTotalGames(), 0);
+    });
+  });
+
 });
